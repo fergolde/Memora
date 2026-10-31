@@ -15,12 +15,12 @@ services:
     ports:
       - "4110:4110"
     volumes:
-      - ./koito:/etc/koito
+      - ./koito:/etc/memora
     restart: unless-stopped
 ```
 
 :::note
-Koito uses SQLite for all new installations as of `v0.2.1`. If you are running a version older than that, you will need to set `KOITO_SQLITE_ENABLED=true`.
+Koito uses SQLite for all new installations as of `v0.2.1`. If you are running a version older than that, you will need to set `MEMORA_SQLITE_ENABLED=true`.
 :::
 
 You can find a full list of configuration options in the [configuration reference](/reference/configuration).

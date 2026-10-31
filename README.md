@@ -50,7 +50,7 @@ services:
     ports:
       - "4110:4110"
     volumes:
-      - ./koito:/etc/koito
+      - ./koito:/etc/memora
     restart: unless-stopped
 ```
 
