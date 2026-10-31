@@ -2,12 +2,9 @@ package handlers
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
-	"time"
 
-	"github.com/fergolde/memora/engine/middleware"
 	"github.com/fergolde/memora/internal/cfg"
 	"github.com/fergolde/memora/internal/db"
 	"github.com/fergolde/memora/internal/logger"
@@ -70,11 +67,6 @@ type playerRecommendStore interface {
 type playerRadioStore interface {
 	db.TrackStore
 	db.ArtistStore
-}
-
-type playerScrobbleStore interface {
-	db.TrackStore
-	db.ListenStore
 }
 
 type PlayerTrackList struct {
@@ -466,96 +458,5 @@ func GetPlayerDiscoverHandler(store playerTrackStore) func(w http.ResponseWriter
 			out = appendEnrichedTrack(ctx, res, out, seen, t)
 		}
 		utils.WriteJSON(w, http.StatusOK, PlayerTrackList{Tracks: out})
-	}
-}
-
-var errMissingScrobbleID = errors.New("no track identifier provided")
-
-// findScrobbleTrack maps a Subsonic song back to the Memora catalog, first by
-// MBID and then by metadata search. Unknown tracks are left to the
-// ListenBrainz endpoint, which auto-creates them.
-func findScrobbleTrack(ctx context.Context, store playerScrobbleStore, song *player.Song) (*models.Track, error) {
-	if song == nil {
-		return nil, errMissingScrobbleID
-	}
-	if song.MusicBrainzID != "" {
-		if mbid, err := uuid.Parse(song.MusicBrainzID); err == nil {
-			if track, err := store.GetTrack(ctx, db.GetTrackOpts{MusicBrainzID: mbid}); err == nil && track != nil {
-				return track, nil
-			}
-		}
-	}
-	tracks, err := store.SearchTracks(ctx, song.Artist+" "+song.Title)
-	if err != nil || len(tracks) == 0 {
-		return nil, errMissingScrobbleID
-	}
-	return tracks[0], nil
-}
-
-func PostPlayerScrobbleHandler(store playerScrobbleStore) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		ctx := r.Context()
-		l := logger.FromContext(ctx)
-
-		u := middleware.GetUserFromContext(ctx)
-		if u == nil {
-			l.Debug().Msg("PostPlayerScrobbleHandler: Unauthorized request (user context is nil)")
-			utils.WriteError(w, "unauthorized", http.StatusUnauthorized)
-			return
-		}
-
-		body, err := utils.DecodeBody[struct {
-			TrackID    int32  `json:"track_id"`
-			MBID       string `json:"mbid"`
-			SubsonicID string `json:"subsonic_id"`
-			Unix       int64  `json:"unix"`
-			Client     string `json:"client"`
-		}](r)
-		if err != nil || body.Unix == 0 {
-			l.Debug().Msg("PostPlayerScrobbleHandler: Invalid body")
-			utils.WriteError(w, "track_id, mbid or subsonic_id plus unix timestamp must be provided", http.StatusBadRequest)
-			return
-		}
-		if time.Now().Unix() < body.Unix {
-			l.Debug().Msg("PostPlayerScrobbleHandler: Timestamp is in the future")
-			utils.WriteError(w, "invalid timestamp", http.StatusBadRequest)
-			return
-		}
-
-		var track *models.Track
-		switch {
-		case body.TrackID > 0:
-			track, err = store.GetTrack(ctx, db.GetTrackOpts{ID: body.TrackID})
-		case body.MBID != "":
-			var mbid uuid.UUID
-			if mbid, err = uuid.Parse(body.MBID); err == nil {
-				track, err = store.GetTrack(ctx, db.GetTrackOpts{MusicBrainzID: mbid})
-			}
-		case body.SubsonicID != "":
-			var song *player.Song
-			if song, err = newPlayerResolver().GetSong(ctx, body.SubsonicID); err == nil {
-				track, err = findScrobbleTrack(ctx, store, song)
-			}
-		default:
-			err = errMissingScrobbleID
-		}
-		if err != nil || track == nil {
-			l.Debug().Msg("PostPlayerScrobbleHandler: Track not in catalog")
-			utils.WriteError(w, "track not in catalog, scrobble via the listenbrainz endpoint", http.StatusNotFound)
-			return
-		}
-
-		client := body.Client
-		if client == "" {
-			client = "Memora Player"
-		}
-		if err := store.SaveListen(ctx, db.SaveListenOpts{
-			TrackID: track.ID, Time: time.Unix(body.Unix, 0), UserID: u.ID, Client: client,
-		}); err != nil {
-			l.Err(err).Msg("PostPlayerScrobbleHandler: Failed to save listen")
-			utils.WriteError(w, "failed to save listen", http.StatusInternalServerError)
-			return
-		}
-		utils.WriteJSON(w, http.StatusCreated, map[string]int32{"track_id": track.ID})
 	}
 }

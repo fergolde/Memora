@@ -83,7 +83,7 @@ Verified example — `GET /top/tracks?limit=1&period=year` → 200:
 5. For playback, use `/player/*` (`subsonic_id`); fall back to Subsonic
    search by artist/title when it is `null`.
 
-## Option C — recommendations, radio, discover, scrobble (IMPLEMENTED)
+## Option C — recommendations, radio, discover (IMPLEMENTED)
 
 Same auth (`Authorization: Token <apikey>`, always required) and the same
 `subsonic_id`/`match` enrichment as above.
@@ -93,14 +93,9 @@ Same auth (`Authorization: Token <apikey>`, always required) and the same
 | `GET /player/recommendations` | `limit` (def 25, max 100), `seed_artist=` (optional) | Seed artist's top tracks, then month-top fill, deduped |
 | `GET /player/radio` | `seed_track=` (Memora track id, required), `limit` (def 25, queue excludes seed) | `{"seed":{…},"queue":[…]}`: seed, same-artist by listens, month-top fill |
 | `GET /player/discover` | `days=` (def 30), `min_listens=` (def 5), `limit` (def 25) | Forgotten favorites: ≥ min_listens all-time, none in last `days` |
-| `POST /player/scrobble` | JSON: `track_id` \| `mbid` \| `subsonic_id` + `unix` (required) + `client` | Resolves to a catalog track and saves the listen; unknown track → `404` (then scrobble via `/apis/listenbrainz/1/submit-listens`, which auto-creates) |
 
-Scrobble example:
-```bash
-curl -X POST -H "Authorization: Token $KEY" -H 'Content-Type: application/json' \
-  -d '{"mbid":"…","unix":1793464000,"client":"Velodrome"}' \
-  "$BASE_URL/apis/web/v1/player/scrobble"  # → 201 {"track_id": N}
-```
+Scrobbling is handled by Navidrome/Subsonic itself (Memora imports the
+listens); no player scrobble endpoint is provided.
 
 ## Quirks
 

@@ -171,65 +171,6 @@ func (r *Resolver) ResolveArtist(ctx context.Context, artist string) (id *string
 	return nil, MatchNone, nil
 }
 
-// Song is the Subsonic song metadata needed to map a Subsonic ID back to
-// the Memora catalog (player scrobble path).
-type Song struct {
-	ID            string `json:"id"`
-	Title         string `json:"title"`
-	Artist        string `json:"artist"`
-	Album         string `json:"album"`
-	MusicBrainzID string `json:"musicBrainzId"`
-	Duration      int    `json:"duration"`
-}
-
-// GetSong returns one Subsonic song by ID. Unlike the Resolve* methods, a
-// missing song or an unconfigured server IS an error: callers need the
-// metadata to continue.
-func (r *Resolver) GetSong(ctx context.Context, id string) (*Song, error) {
-	if r.baseURL == "" {
-		return nil, fmt.Errorf("player: subsonic not configured")
-	}
-	ctx, cancel := context.WithTimeout(ctx, defaultTimeout)
-	defer cancel()
-
-	endpoint := fmt.Sprintf("%s/rest/getSong?%s&f=json&v=%s&c=%s&id=%s",
-		r.baseURL, r.authParams, search3API, search3Client, url.QueryEscape(id))
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, endpoint, nil)
-	if err != nil {
-		return nil, fmt.Errorf("player: getSong request: %w", err)
-	}
-	req.Header.Set("Accept", "application/json")
-
-	resp, err := r.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("player: getSong request: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return nil, fmt.Errorf("player: getSong status: %s", resp.Status)
-	}
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("player: getSong read: %w", err)
-	}
-
-	var out struct {
-		SubsonicResponse struct {
-			Status string `json:"status"`
-			Song   *Song  `json:"song"`
-		} `json:"subsonic-response"`
-	}
-	if err := json.Unmarshal(body, &out); err != nil {
-		return nil, fmt.Errorf("player: getSong decode: %w", err)
-	}
-	if out.SubsonicResponse.Song == nil || out.SubsonicResponse.Song.ID == "" {
-		return nil, fmt.Errorf("player: getSong: song not found")
-	}
-	return out.SubsonicResponse.Song, nil
-}
-
 // search3 performs one Subsonic search3 request bounded by defaultTimeout.
 func (r *Resolver) search3(ctx context.Context, query string, songCount, albumCount, artistCount int) (*search3Response, error) {
 	ctx, cancel := context.WithTimeout(ctx, defaultTimeout)

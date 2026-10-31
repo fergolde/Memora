@@ -144,7 +144,6 @@ func bindRoutes(
 			r.Get("/recommendations", handlers.GetPlayerRecommendationsHandler(db))
 			r.Get("/radio", handlers.GetPlayerRadioHandler(db))
 			r.Get("/discover", handlers.GetPlayerDiscoverHandler(db))
-			r.Post("/scrobble", handlers.PostPlayerScrobbleHandler(db))
 		})
 	})
 

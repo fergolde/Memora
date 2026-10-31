@@ -140,13 +140,3 @@ func TestGetPlayerDiscoverHandlerEmptyDB(t *testing.T) {
 
 	require.Equal(t, http.StatusOK, rec.Code)
 }
-
-func TestPostPlayerScrobbleHandlerInvalidBody(t *testing.T) {
-	store := newPlayerTestDB(t)
-	req := httptest.NewRequest(http.MethodPost, "/apis/web/v1/player/scrobble", nil)
-	rec := httptest.NewRecorder()
-
-	handlers.PostPlayerScrobbleHandler(store)(rec, req)
-
-	assert.Equal(t, http.StatusBadRequest, rec.Code)
-}
