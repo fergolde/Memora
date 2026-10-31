@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"slices"
 	"strings"
+	"time"
 
 	"github.com/fergolde/memora/internal/catalog"
 	"github.com/fergolde/memora/internal/db"
@@ -551,6 +552,91 @@ func (s *Sqlite) GetTopTracksPaginated(ctx context.Context, opts db.GetItemsOpts
 		HasNextPage:  int64(offset+len(tracks)) < totalCount,
 		CurrentPage:  int32(opts.Page),
 	}, nil
+}
+
+// GetForgottenFavorites returns once-loved tracks with no listens since cutoff,
+// ordered by all-time listens desc (player discover / recommendations support).
+func (s *Sqlite) GetForgottenFavorites(ctx context.Context, opts db.GetForgottenOpts) ([]*models.Track, error) {
+	if opts.Days <= 0 {
+		opts.Days = 30
+	}
+	if opts.MinListens <= 0 {
+		opts.MinListens = 5
+	}
+	if opts.Limit <= 0 {
+		opts.Limit = 50
+	}
+	cutoff := time.Now().Unix() - int64(opts.Days)*86400
+
+	artistJoin := ""
+	args := []any{cutoff, opts.MinListens, cutoff, opts.Limit}
+	if opts.ArtistID > 0 {
+		artistJoin = "JOIN artist_tracks at ON at.track_id = t.id AND at.artist_id = ?"
+		args = []any{cutoff, opts.ArtistID, opts.MinListens, cutoff, opts.Limit}
+	}
+	query := `
+		SELECT t.id, twt.title, twt.musicbrainz_id, twt.release_id, rls.image, COUNT(*) AS listen_count
+		FROM listens l
+		JOIN tracks t ON l.track_id = t.id
+		JOIN tracks_with_title twt ON twt.id = t.id
+		JOIN releases rls ON twt.release_id = rls.id
+		` + artistJoin + `
+		WHERE l.listened_at < ?
+		GROUP BY l.track_id
+		HAVING COUNT(*) >= ? AND MAX(l.listened_at) < ?
+		ORDER BY listen_count DESC, l.track_id
+		LIMIT ?`
+
+	return s.queryPlayerTracks(ctx, query, args)
+}
+
+// GetTracksByArtist returns an artist's tracks ordered by listens desc
+// (player radio support).
+func (s *Sqlite) GetTracksByArtist(ctx context.Context, opts db.GetTracksByArtistOpts) ([]*models.Track, error) {
+	if opts.Limit <= 0 {
+		opts.Limit = 50
+	}
+	query := `
+		SELECT t.id, twt.title, twt.musicbrainz_id, twt.release_id, rls.image, COUNT(l.track_id) AS listen_count
+		FROM artist_tracks at
+		JOIN tracks t ON t.id = at.track_id
+		JOIN tracks_with_title twt ON twt.id = t.id
+		JOIN releases rls ON twt.release_id = rls.id
+		LEFT JOIN listens l ON l.track_id = t.id
+		WHERE at.artist_id = ?
+		GROUP BY t.id
+		ORDER BY listen_count DESC, t.id
+		LIMIT ?`
+
+	return s.queryPlayerTracks(ctx, query, []any{opts.ArtistID, opts.Limit})
+}
+
+func (s *Sqlite) queryPlayerTracks(ctx context.Context, query string, args []any) ([]*models.Track, error) {
+	rows, err := s.db.QueryContext(ctx, query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("queryPlayerTracks: %w", err)
+	}
+	defer rows.Close()
+
+	tracks := make([]*models.Track, 0)
+	for rows.Next() {
+		var t models.Track
+		var mbzID, image sql.NullString
+		if err := rows.Scan(&t.ID, &t.Title, &mbzID, &t.AlbumID, &image, &t.ListenCount); err != nil {
+			return nil, err
+		}
+		t.MbzID = parseNullableUUID(mbzID)
+		t.Image = catalog.BuildImageList(parseNullableUUID(image))
+		t.Artists, err = s.artistsForTrack(ctx, t.ID)
+		if err != nil {
+			return nil, err
+		}
+		tracks = append(tracks, &t)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return tracks, nil
 }
 
 func (s *Sqlite) MergeTracks(ctx context.Context, fromId, toId int32) error {

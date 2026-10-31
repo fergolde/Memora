@@ -31,6 +31,22 @@ type GetTrackOpts struct {
 	ArtistIDs     []int32
 }
 
+// GetForgottenOpts selects once-loved tracks untouched for a while
+// (player discover / recommendations support).
+type GetForgottenOpts struct {
+	MinListens int
+	Days       int
+	Limit      int
+	ArtistID   int32
+}
+
+// GetTracksByArtistOpts selects an artist's tracks ordered by listens
+// (player radio support).
+type GetTracksByArtistOpts struct {
+	ArtistID int32
+	Limit    int
+}
+
 type SaveTrackOpts struct {
 	Title          string
 	AlbumID        int32

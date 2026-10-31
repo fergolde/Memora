@@ -53,6 +53,8 @@ type TrackStore interface {
 	GetTrack(ctx context.Context, opts GetTrackOpts) (*models.Track, error)
 	GetTracksWithNoDurationButHaveMbzID(ctx context.Context, from int32) ([]*models.Track, error)
 	GetTopTracksPaginated(ctx context.Context, opts GetItemsOpts) (*PaginatedResponse[RankedItem[*models.Track]], error)
+	GetForgottenFavorites(ctx context.Context, opts GetForgottenOpts) ([]*models.Track, error)
+	GetTracksByArtist(ctx context.Context, opts GetTracksByArtistOpts) ([]*models.Track, error)
 	GetAllTrackAliases(ctx context.Context, id int32) ([]models.Alias, error)
 	SaveTrack(ctx context.Context, opts SaveTrackOpts) (*models.Track, error)
 	SaveTrackAliases(ctx context.Context, id int32, aliases []string, source string) error
