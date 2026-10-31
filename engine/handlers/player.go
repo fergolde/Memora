@@ -2,8 +2,12 @@ package handlers
 
 import (
 	"context"
+	"errors"
 	"net/http"
+	"strconv"
+	"time"
 
+	"github.com/fergolde/memora/engine/middleware"
 	"github.com/fergolde/memora/internal/cfg"
 	"github.com/fergolde/memora/internal/db"
 	"github.com/fergolde/memora/internal/logger"
@@ -54,8 +58,28 @@ type playerListenStore interface {
 	db.ListenStore
 }
 
-type playerAlbumStore interface {
-	db.AlbumStore
+type playerRecommendStore interface {
+	db.TrackStore
+	db.ArtistStore
+}
+
+type playerRadioStore interface {
+	db.TrackStore
+	db.ArtistStore
+}
+
+type playerScrobbleStore interface {
+	db.TrackStore
+	db.ListenStore
+}
+
+type PlayerTrackList struct {
+	Tracks []PlayerTrack `json:"tracks"`
+}
+
+type PlayerRadioQueue struct {
+	Seed  PlayerTrack   `json:"seed"`
+	Queue []PlayerTrack `json:"queue"`
 }
 
 func newPlayerResolver() *player.Resolver {
@@ -265,5 +289,269 @@ func GetPlayerResolveHandler() func(w http.ResponseWriter, r *http.Request) {
 			SubsonicID: id,
 			Match:      match,
 		})
+	}
+}
+
+func playerLimit(r *http.Request, def int) int {
+	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
+	if err != nil || limit < 1 {
+		return def
+	}
+	if limit > 100 {
+		return 100
+	}
+	return limit
+}
+
+func appendEnrichedTrack(ctx context.Context, res *player.Resolver, out []PlayerTrack, seen map[int32]bool, t *models.Track) []PlayerTrack {
+	if t == nil || seen[t.ID] {
+		return out
+	}
+	seen[t.ID] = true
+	return append(out, enrichTrack(ctx, res, t))
+}
+
+func GetPlayerRecommendationsHandler(store playerRecommendStore) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		l := logger.FromContext(ctx)
+		limit := playerLimit(r, 25)
+		seedArtist := r.URL.Query().Get("seed_artist")
+		res := newPlayerResolver()
+		seen := make(map[int32]bool)
+		var tracks []PlayerTrack
+
+		if seedArtist != "" {
+			artists, err := store.SearchArtists(ctx, seedArtist)
+			if err != nil {
+				l.Err(err).Msg("GetPlayerRecommendationsHandler: Failed to search seed artist")
+				utils.WriteError(w, "failed to search artist", http.StatusBadRequest)
+				return
+			}
+			if len(artists) > 0 {
+				byArtist, err := store.GetTracksByArtist(ctx, db.GetTracksByArtistOpts{ArtistID: artists[0].ID, Limit: limit})
+				if err != nil {
+					l.Err(err).Msg("GetPlayerRecommendationsHandler: Failed to get artist tracks")
+					utils.WriteError(w, "failed to get tracks", http.StatusBadRequest)
+					return
+				}
+				for _, t := range byArtist {
+					tracks = appendEnrichedTrack(ctx, res, tracks, seen, t)
+				}
+			}
+		}
+
+		if len(tracks) < limit {
+			top, err := store.GetTopTracksPaginated(ctx, db.GetItemsOpts{
+				Limit: limit, Page: 1, Timeframe: db.Timeframe{Period: db.PeriodMonth},
+			})
+			if err != nil {
+				l.Err(err).Msg("GetPlayerRecommendationsHandler: Failed to retrieve top tracks")
+				utils.WriteError(w, "failed to get tracks", http.StatusBadRequest)
+				return
+			}
+			for _, ranked := range top.Items {
+				if len(tracks) >= limit {
+					break
+				}
+				tracks = appendEnrichedTrack(ctx, res, tracks, seen, ranked.Item)
+			}
+		}
+		utils.WriteJSON(w, http.StatusOK, PlayerTrackList{Tracks: tracks})
+	}
+}
+
+func GetPlayerRadioHandler(store playerRadioStore) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		l := logger.FromContext(ctx)
+		limit := playerLimit(r, 25)
+
+		seedID, err := strconv.Atoi(r.URL.Query().Get("seed_track"))
+		if err != nil || seedID < 1 {
+			l.Debug().Msg("GetPlayerRadioHandler: Invalid seed_track")
+			utils.WriteError(w, "query parameter 'seed_track' (Memora track id) is required", http.StatusBadRequest)
+			return
+		}
+		seed, err := store.GetTrack(ctx, db.GetTrackOpts{ID: int32(seedID)})
+		if err != nil || seed == nil {
+			l.Debug().Msg("GetPlayerRadioHandler: Seed track not found")
+			utils.WriteError(w, "seed track not found", http.StatusNotFound)
+			return
+		}
+
+		res := newPlayerResolver()
+		seen := make(map[int32]bool)
+		seedPlayer := enrichTrack(ctx, res, seed)
+		seen[seed.ID] = true
+		queue := []PlayerTrack{}
+
+		artists, err := store.GetArtistsForTrack(ctx, seed.ID)
+		if err != nil {
+			l.Err(err).Msg("GetPlayerRadioHandler: Failed to get seed artists")
+			utils.WriteError(w, "failed to build radio", http.StatusBadRequest)
+			return
+		}
+		if len(artists) > 0 {
+			peers, err := store.GetTracksByArtist(ctx, db.GetTracksByArtistOpts{ArtistID: artists[0].ID, Limit: limit})
+			if err != nil {
+				l.Err(err).Msg("GetPlayerRadioHandler: Failed to get artist tracks")
+				utils.WriteError(w, "failed to build radio", http.StatusBadRequest)
+				return
+			}
+			for _, t := range peers {
+				if len(queue) >= limit-1 {
+					break
+				}
+				before := len(queue)
+				tmp := appendEnrichedTrack(ctx, res, queue, seen, t)
+				if len(tmp) == before {
+					continue
+				}
+				queue = tmp
+			}
+		}
+
+		if len(queue) < limit-1 {
+			top, err := store.GetTopTracksPaginated(ctx, db.GetItemsOpts{
+				Limit: limit, Page: 1, Timeframe: db.Timeframe{Period: db.PeriodMonth},
+			})
+			if err != nil {
+				l.Err(err).Msg("GetPlayerRadioHandler: Failed to retrieve top tracks")
+				utils.WriteError(w, "failed to build radio", http.StatusBadRequest)
+				return
+			}
+			for _, ranked := range top.Items {
+				if len(queue) >= limit-1 {
+					break
+				}
+				queue = appendEnrichedTrack(ctx, res, queue, seen, ranked.Item)
+			}
+		}
+		utils.WriteJSON(w, http.StatusOK, PlayerRadioQueue{Seed: seedPlayer, Queue: queue})
+	}
+}
+
+func GetPlayerDiscoverHandler(store playerTrackStore) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		l := logger.FromContext(ctx)
+
+		days, err := strconv.Atoi(r.URL.Query().Get("days"))
+		if err != nil || days < 1 {
+			days = 30
+		}
+		minListens, err := strconv.Atoi(r.URL.Query().Get("min_listens"))
+		if err != nil || minListens < 1 {
+			minListens = 5
+		}
+
+		tracks, err := store.GetForgottenFavorites(ctx, db.GetForgottenOpts{
+			MinListens: minListens, Days: days, Limit: playerLimit(r, 25),
+		})
+		if err != nil {
+			l.Err(err).Msg("GetPlayerDiscoverHandler: Failed to retrieve forgotten favorites")
+			utils.WriteError(w, "failed to get tracks", http.StatusBadRequest)
+			return
+		}
+
+		res := newPlayerResolver()
+		seen := make(map[int32]bool)
+		var out []PlayerTrack
+		for _, t := range tracks {
+			out = appendEnrichedTrack(ctx, res, out, seen, t)
+		}
+		utils.WriteJSON(w, http.StatusOK, PlayerTrackList{Tracks: out})
+	}
+}
+
+var errMissingScrobbleID = errors.New("no track identifier provided")
+
+// findScrobbleTrack maps a Subsonic song back to the Memora catalog, first by
+// MBID and then by metadata search. Unknown tracks are left to the
+// ListenBrainz endpoint, which auto-creates them.
+func findScrobbleTrack(ctx context.Context, store playerScrobbleStore, song *player.Song) (*models.Track, error) {
+	if song == nil {
+		return nil, errMissingScrobbleID
+	}
+	if song.MusicBrainzID != "" {
+		if mbid, err := uuid.Parse(song.MusicBrainzID); err == nil {
+			if track, err := store.GetTrack(ctx, db.GetTrackOpts{MusicBrainzID: mbid}); err == nil && track != nil {
+				return track, nil
+			}
+		}
+	}
+	tracks, err := store.SearchTracks(ctx, song.Artist+" "+song.Title)
+	if err != nil || len(tracks) == 0 {
+		return nil, errMissingScrobbleID
+	}
+	return tracks[0], nil
+}
+
+func PostPlayerScrobbleHandler(store playerScrobbleStore) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		l := logger.FromContext(ctx)
+
+		u := middleware.GetUserFromContext(ctx)
+		if u == nil {
+			l.Debug().Msg("PostPlayerScrobbleHandler: Unauthorized request (user context is nil)")
+			utils.WriteError(w, "unauthorized", http.StatusUnauthorized)
+			return
+		}
+
+		body, err := utils.DecodeBody[struct {
+			TrackID    int32  `json:"track_id"`
+			MBID       string `json:"mbid"`
+			SubsonicID string `json:"subsonic_id"`
+			Unix       int64  `json:"unix"`
+			Client     string `json:"client"`
+		}](r)
+		if err != nil || body.Unix == 0 {
+			l.Debug().Msg("PostPlayerScrobbleHandler: Invalid body")
+			utils.WriteError(w, "track_id, mbid or subsonic_id plus unix timestamp must be provided", http.StatusBadRequest)
+			return
+		}
+		if time.Now().Unix() < body.Unix {
+			l.Debug().Msg("PostPlayerScrobbleHandler: Timestamp is in the future")
+			utils.WriteError(w, "invalid timestamp", http.StatusBadRequest)
+			return
+		}
+
+		var track *models.Track
+		switch {
+		case body.TrackID > 0:
+			track, err = store.GetTrack(ctx, db.GetTrackOpts{ID: body.TrackID})
+		case body.MBID != "":
+			var mbid uuid.UUID
+			if mbid, err = uuid.Parse(body.MBID); err == nil {
+				track, err = store.GetTrack(ctx, db.GetTrackOpts{MusicBrainzID: mbid})
+			}
+		case body.SubsonicID != "":
+			var song *player.Song
+			if song, err = newPlayerResolver().GetSong(ctx, body.SubsonicID); err == nil {
+				track, err = findScrobbleTrack(ctx, store, song)
+			}
+		default:
+			err = errMissingScrobbleID
+		}
+		if err != nil || track == nil {
+			l.Debug().Msg("PostPlayerScrobbleHandler: Track not in catalog")
+			utils.WriteError(w, "track not in catalog, scrobble via the listenbrainz endpoint", http.StatusNotFound)
+			return
+		}
+
+		client := body.Client
+		if client == "" {
+			client = "Memora Player"
+		}
+		if err := store.SaveListen(ctx, db.SaveListenOpts{
+			TrackID: track.ID, Time: time.Unix(body.Unix, 0), UserID: u.ID, Client: client,
+		}); err != nil {
+			l.Err(err).Msg("PostPlayerScrobbleHandler: Failed to save listen")
+			utils.WriteError(w, "failed to save listen", http.StatusInternalServerError)
+			return
+		}
+		utils.WriteJSON(w, http.StatusCreated, map[string]int32{"track_id": track.ID})
 	}
 }

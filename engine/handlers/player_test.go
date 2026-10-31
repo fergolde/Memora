@@ -95,3 +95,58 @@ func TestGetPlayerTopAlbumsHandlerEmptyDB(t *testing.T) {
 
 	require.Equal(t, http.StatusOK, rec.Code)
 }
+
+func TestGetPlayerRecommendationsHandlerEmptyDB(t *testing.T) {
+	store := newPlayerTestDB(t)
+	req := httptest.NewRequest(http.MethodGet, "/apis/web/v1/player/recommendations?limit=10", nil)
+	rec := httptest.NewRecorder()
+
+	handlers.GetPlayerRecommendationsHandler(store)(rec, req)
+
+	require.Equal(t, http.StatusOK, rec.Code)
+	var body struct {
+		Tracks []any `json:"tracks"`
+	}
+	require.NoError(t, json.NewDecoder(rec.Body).Decode(&body))
+	assert.Empty(t, body.Tracks)
+}
+
+func TestGetPlayerRadioHandlerMissingSeed(t *testing.T) {
+	store := newPlayerTestDB(t)
+	req := httptest.NewRequest(http.MethodGet, "/apis/web/v1/player/radio", nil)
+	rec := httptest.NewRecorder()
+
+	handlers.GetPlayerRadioHandler(store)(rec, req)
+
+	assert.Equal(t, http.StatusBadRequest, rec.Code)
+}
+
+func TestGetPlayerRadioHandlerUnknownSeed(t *testing.T) {
+	store := newPlayerTestDB(t)
+	req := httptest.NewRequest(http.MethodGet, "/apis/web/v1/player/radio?seed_track=999999", nil)
+	rec := httptest.NewRecorder()
+
+	handlers.GetPlayerRadioHandler(store)(rec, req)
+
+	assert.Equal(t, http.StatusNotFound, rec.Code)
+}
+
+func TestGetPlayerDiscoverHandlerEmptyDB(t *testing.T) {
+	store := newPlayerTestDB(t)
+	req := httptest.NewRequest(http.MethodGet, "/apis/web/v1/player/discover?days=30&min_listens=5", nil)
+	rec := httptest.NewRecorder()
+
+	handlers.GetPlayerDiscoverHandler(store)(rec, req)
+
+	require.Equal(t, http.StatusOK, rec.Code)
+}
+
+func TestPostPlayerScrobbleHandlerInvalidBody(t *testing.T) {
+	store := newPlayerTestDB(t)
+	req := httptest.NewRequest(http.MethodPost, "/apis/web/v1/player/scrobble", nil)
+	rec := httptest.NewRecorder()
+
+	handlers.PostPlayerScrobbleHandler(store)(rec, req)
+
+	assert.Equal(t, http.StatusBadRequest, rec.Code)
+}

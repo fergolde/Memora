@@ -141,6 +141,10 @@ func bindRoutes(
 			r.Get("/recent", handlers.GetPlayerRecentHandler(db))
 			r.Get("/search", handlers.GetPlayerSearchHandler(db))
 			r.Get("/resolve", handlers.GetPlayerResolveHandler())
+			r.Get("/recommendations", handlers.GetPlayerRecommendationsHandler(db))
+			r.Get("/radio", handlers.GetPlayerRadioHandler(db))
+			r.Get("/discover", handlers.GetPlayerDiscoverHandler(db))
+			r.Post("/scrobble", handlers.PostPlayerScrobbleHandler(db))
 		})
 	})
 
