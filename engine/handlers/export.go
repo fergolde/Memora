@@ -13,7 +13,7 @@ import (
 func ExportHandler(store db.ExportStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Content-Disposition", `attachment; filename="koito_export.json"`)
+		w.Header().Set("Content-Disposition", `attachment; filename="memora_export.json"`)
 		ctx := r.Context()
 		l := logger.FromContext(ctx)
 		l.Debug().Msg("ExportHandler: Received request for export file")

@@ -53,7 +53,7 @@ func initLogger(getenv func(string) string, version string, w io.Writer) (*zerol
 	}
 
 	ctx := logger.NewContext(l)
-	l.Info().Msgf("Koito %s", version)
+	l.Info().Msgf("Memora %s", version)
 	return l, ctx, nil
 }
 
@@ -92,7 +92,7 @@ func Run(
 			return err
 		}
 	}
-	f, err := os.CreateTemp(cfg.ConfigDir(), ".koito_perm_check_*")
+	f, err := os.CreateTemp(cfg.ConfigDir(), ".memora_perm_check_*")
 	if err != nil {
 		l.Fatal().Err(err).Msg("Engine: Config directory is not writable")
 		return err
@@ -163,7 +163,7 @@ func Run(
 
 	if cfg.SubsonicEnabled() {
 		l.Debug().Msg("Engine: Checking Subsonic configuration")
-		pingURL := cfg.SubsonicUrl() + "/rest/ping.view?" + cfg.SubsonicParams() + "&f=json&v=1&c=koito"
+		pingURL := cfg.SubsonicUrl() + "/rest/ping.view?" + cfg.SubsonicParams() + "&f=json&v=1&c=memora"
 
 		resp, err := http.Get(pingURL)
 		if err != nil {
@@ -316,9 +316,9 @@ func RunImporter(l *zerolog.Logger, store db.DB, mbzc mbz.MusicBrainzCaller) {
 			if err != nil {
 				l.Err(err).Msgf("Importer: Failed to import file: %s", file.Name())
 			}
-		} else if strings.Contains(file.Name(), "koito") {
-			l.Info().Msgf("Importer: Import file %s detecting as being Koito export", file.Name())
-			err := importer.ImportKoitoFile(logger.NewContext(l), store, file.Name())
+		} else if strings.Contains(file.Name(), "memora") || strings.Contains(file.Name(), "koito") {
+			l.Info().Msgf("Importer: Import file %s detecting as being Memora export", file.Name())
+			err := importer.ImportMemoraFile(logger.NewContext(l), store, file.Name())
 			if err != nil {
 				l.Err(err).Msgf("Importer: Failed to import file: %s", file.Name())
 			}

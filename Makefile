@@ -12,7 +12,7 @@ api.test:
 	go test ./... -timeout 60s
 
 api.build:
-	CGO_ENABLED=1 go build -ldflags='-s -w' -o koito ./cmd/api/main.go
+	CGO_ENABLED=1 go build -ldflags='-s -w' -o memora ./cmd/api/main.go
 
 client.dev:
 	cd client && yarn run dev

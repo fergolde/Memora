@@ -252,12 +252,12 @@ func TestImportListenBrainz_MBIDMapping(t *testing.T) {
 	assert.Equal(t, "Zombie", track.Title)
 }
 
-func TestImportKoito(t *testing.T) {
+func TestImportMemora(t *testing.T) {
 	store := newTestDB()
 
-	src := path.Join("..", "test_assets", "koito_export_test.json")
+	src := path.Join("..", "test_assets", "memora_export_test.json")
 	destDir := filepath.Join(cfg.ConfigDir(), "import")
-	dest := filepath.Join(destDir, "koito_export_test.json")
+	dest := filepath.Join(destDir, "memora_export_test.json")
 
 	ctx := context.Background()
 

@@ -11,7 +11,7 @@ import (
 )
 
 func SubmitListenWithIDHandler(store db.ListenStore) http.HandlerFunc {
-	var defaultClientStr = "Koito Web UI"
+	var defaultClientStr = "Memora Web UI"
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		l := logger.FromContext(ctx)

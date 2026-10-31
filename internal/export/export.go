@@ -13,31 +13,31 @@ import (
 	"github.com/google/uuid"
 )
 
-type KoitoExport struct {
-	Version    string        `json:"version"`
-	ExportedAt time.Time     `json:"exported_at"` // RFC3339
-	User       string        `json:"user"`        // username
-	Listens    []KoitoListen `json:"listens"`
+type MemoraExport struct {
+	Version    string         `json:"version"`
+	ExportedAt time.Time      `json:"exported_at"` // RFC3339
+	User       string         `json:"user"`        // username
+	Listens    []MemoraListen `json:"listens"`
 }
-type KoitoListen struct {
-	ListenedAt time.Time     `json:"listened_at"`
-	Client     string        `json:"client"`
-	Track      KoitoTrack    `json:"track"`
-	Album      KoitoAlbum    `json:"album"`
-	Artists    []KoitoArtist `json:"artists"`
+type MemoraListen struct {
+	ListenedAt time.Time      `json:"listened_at"`
+	Client     string         `json:"client"`
+	Track      MemoraTrack    `json:"track"`
+	Album      MemoraAlbum    `json:"album"`
+	Artists    []MemoraArtist `json:"artists"`
 }
-type KoitoTrack struct {
+type MemoraTrack struct {
 	MBID     *uuid.UUID     `json:"mbid"`
 	Duration int            `json:"duration"`
 	Aliases  []models.Alias `json:"aliases"`
 }
-type KoitoAlbum struct {
+type MemoraAlbum struct {
 	ImageUrl       string         `json:"image_url"`
 	MBID           *uuid.UUID     `json:"mbid"`
 	Aliases        []models.Alias `json:"aliases"`
 	VariousArtists bool           `json:"various_artists"`
 }
-type KoitoArtist struct {
+type MemoraArtist struct {
 	ImageUrl  string         `json:"image_url"`
 	MBID      *uuid.UUID     `json:"mbid"`
 	IsPrimary bool           `json:"is_primary"`
@@ -50,10 +50,10 @@ func ExportData(ctx context.Context, user *models.User, store db.ExportStore, ou
 	pageSize := int32(1000)
 
 	l := logger.FromContext(ctx)
-	l.Info().Msg("ExportData: Generating Koito export file...")
+	l.Info().Msg("ExportData: Generating Memora export file...")
 
 	exportedAt := time.Now()
-	// exportFile := path.Join(cfg.ConfigDir(), fmt.Sprintf("koito_export_%d.json", exportedAt.Unix()))
+	// exportFile := path.Join(cfg.ConfigDir(), fmt.Sprintf("memora_export_%d.json", exportedAt.Unix()))
 	// f, err := os.Create(exportFile)
 	// if err != nil {
 	// 	return fmt.Errorf("ExportData: %w", err)
@@ -119,20 +119,20 @@ func ExportData(ctx context.Context, user *models.User, store db.ExportStore, ou
 	return nil
 }
 
-func convertToExportFormat(item *db.ExportItem) *KoitoListen {
+func convertToExportFormat(item *db.ExportItem) *MemoraListen {
 	var client string
 	if item.Client != nil {
 		client = *item.Client
 	}
-	ret := &KoitoListen{
+	ret := &MemoraListen{
 		ListenedAt: item.ListenedAt.UTC(),
-		Track: KoitoTrack{
+		Track: MemoraTrack{
 			MBID:     item.TrackMbid,
 			Duration: int(item.TrackDuration),
 			Aliases:  item.TrackAliases,
 		},
 		Client: client,
-		Album: KoitoAlbum{
+		Album: MemoraAlbum{
 			MBID:           item.ReleaseMbid,
 			ImageUrl:       item.ReleaseImageSource,
 			VariousArtists: item.VariousArtists,
@@ -140,7 +140,7 @@ func convertToExportFormat(item *db.ExportItem) *KoitoListen {
 		},
 	}
 	for i := range item.Artists {
-		ret.Artists = append(ret.Artists, KoitoArtist{
+		ret.Artists = append(ret.Artists, MemoraArtist{
 			IsPrimary: item.Artists[i].IsPrimary,
 			MBID:      item.Artists[i].MbzID,
 			Aliases:   item.Artists[i].Aliases,

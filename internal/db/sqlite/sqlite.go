@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"os"
 	"path"
 	"time"
 
@@ -24,7 +25,15 @@ type Sqlite struct {
 }
 
 func New() (*Sqlite, error) {
-	dsn := path.Join(cfg.ConfigDir(), "koito.db") + "?_pragma=journal_mode(WAL)&_pragma=foreign_keys(ON)&_pragma=busy_timeout(5000)"
+	dbPath := path.Join(cfg.ConfigDir(), "memora.db")
+	// Compatibilidad con instalaciones Koito: si aún no existe memora.db
+	// pero sí el koito.db anterior, se sigue usando este último.
+	if _, err := os.Stat(dbPath); os.IsNotExist(err) {
+		if _, err := os.Stat(path.Join(cfg.ConfigDir(), "koito.db")); err == nil {
+			dbPath = path.Join(cfg.ConfigDir(), "koito.db")
+		}
+	}
+	dsn := dbPath + "?_pragma=journal_mode(WAL)&_pragma=foreign_keys(ON)&_pragma=busy_timeout(5000)"
 	db, err := sql.Open("sqlite", dsn)
 	if err != nil {
 		return nil, fmt.Errorf("sqlite.New: open: %w", err)

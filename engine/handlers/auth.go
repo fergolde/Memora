@@ -61,7 +61,7 @@ func LoginHandler(store db.UserStore) http.HandlerFunc {
 		}
 
 		http.SetCookie(w, &http.Cookie{
-			Name:     "koito_session",
+			Name:     "memora_session",
 			Value:    session.ID.String(),
 			Expires:  expiresAt,
 			Path:     "/",
@@ -81,7 +81,7 @@ func LogoutHandler(store db.UserStore) http.HandlerFunc {
 
 		l.Debug().Msg("LogoutHandler: Received request")
 
-		cookie, err := r.Cookie("koito_session")
+		cookie, err := r.Cookie("memora_session")
 		if err == nil {
 			sid, err := uuid.Parse(cookie.Value)
 			if err != nil {
@@ -92,7 +92,7 @@ func LogoutHandler(store db.UserStore) http.HandlerFunc {
 		}
 
 		http.SetCookie(w, &http.Cookie{
-			Name:     "koito_session",
+			Name:     "memora_session",
 			Value:    "",
 			Path:     "/",
 			HttpOnly: true,

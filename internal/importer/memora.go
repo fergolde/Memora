@@ -18,22 +18,22 @@ import (
 	"github.com/google/uuid"
 )
 
-func ImportKoitoFile(ctx context.Context, store importStore, filename string) error {
+func ImportMemoraFile(ctx context.Context, store importStore, filename string) error {
 	l := logger.FromContext(ctx)
-	l.Info().Msgf("Beginning Koito import on file: %s", filename)
-	data := new(export.KoitoExport)
+	l.Info().Msgf("Beginning Memora import on file: %s", filename)
+	data := new(export.MemoraExport)
 	f, err := os.Open(path.Join(cfg.ConfigDir(), "import", filename))
 	if err != nil {
-		return fmt.Errorf("ImportKoitoFile: os.Open: %w", err)
+		return fmt.Errorf("ImportMemoraFile: os.Open: %w", err)
 	}
 	defer f.Close()
 	err = json.NewDecoder(f).Decode(data)
 	if err != nil {
-		return fmt.Errorf("ImportKoitoFile: Decode: %w", err)
+		return fmt.Errorf("ImportMemoraFile: Decode: %w", err)
 	}
 
 	if data.Version != "1" {
-		return fmt.Errorf("ImportKoitoFile: unupported version: %s", data.Version)
+		return fmt.Errorf("ImportMemoraFile: unupported version: %s", data.Version)
 	}
 
 	l.Info().Msgf("Beginning data import for user: %s", data.User)
@@ -74,11 +74,11 @@ func ImportKoitoFile(ctx context.Context, store importStore, filename string) er
 					Aliases:       utils.FlattenAliases(ia.Aliases),
 				})
 				if err != nil {
-					return fmt.Errorf("ImportKoitoFile: %w", err)
+					return fmt.Errorf("ImportMemoraFile: %w", err)
 				}
 				artistIds = append(artistIds, artist.ID)
 			} else if err != nil {
-				return fmt.Errorf("ImportKoitoFile: %w", err)
+				return fmt.Errorf("ImportMemoraFile: %w", err)
 			} else {
 				artistIds = append(artistIds, artist.ID)
 			}
@@ -112,11 +112,11 @@ func ImportKoitoFile(ctx context.Context, store importStore, filename string) er
 				VariousArtists: data.Listens[i].Album.VariousArtists,
 			})
 			if err != nil {
-				return fmt.Errorf("ImportKoitoFile: %w", err)
+				return fmt.Errorf("ImportMemoraFile: %w", err)
 			}
 			albumId = album.ID
 		} else if err != nil {
-			return fmt.Errorf("ImportKoitoFile: %w", err)
+			return fmt.Errorf("ImportMemoraFile: %w", err)
 		} else {
 			albumId = album.ID
 		}
@@ -142,15 +142,15 @@ func ImportKoitoFile(ctx context.Context, store importStore, filename string) er
 				AlbumID:        albumId,
 			})
 			if err != nil {
-				return fmt.Errorf("ImportKoitoFile: %w", err)
+				return fmt.Errorf("ImportMemoraFile: %w", err)
 			}
 			// save track aliases
 			err = store.SaveTrackAliases(ctx, track.ID, utils.FlattenAliases(data.Listens[i].Track.Aliases), "Import")
 			if err != nil {
-				return fmt.Errorf("ImportKoitoFile: %w", err)
+				return fmt.Errorf("ImportMemoraFile: %w", err)
 			}
 		} else if err != nil {
-			return fmt.Errorf("ImportKoitoFile: %w", err)
+			return fmt.Errorf("ImportMemoraFile: %w", err)
 		}
 
 		// save listen
@@ -161,10 +161,10 @@ func ImportKoitoFile(ctx context.Context, store importStore, filename string) er
 			UserID:  1,
 		})
 		if err != nil {
-			return fmt.Errorf("ImportKoitoFile: %w", err)
+			return fmt.Errorf("ImportMemoraFile: %w", err)
 		}
 
-		l.Info().Msgf("ImportKoitoFile: Imported listen for track %s", track.Title)
+		l.Info().Msgf("ImportMemoraFile: Imported listen for track %s", track.Title)
 		count++
 	}
 
