@@ -59,7 +59,20 @@ Verified example — `GET /top/tracks?limit=1&period=year` → 200:
   page with `has_next_page`.
 - Errors are JSON `{"error":"..."}`; unauthenticated management calls return 401.
 
-## Next (Option B)
+## Next (Option B) — IMPLEMENTED
 
-Playable endpoints (`/player/...`) returning `subsonicId` resolved server-side,
-so the player can enqueue without matching metadata itself.
+Playable endpoints under `/apis/web/v1/player` (require session or
+`Authorization: Token <apikey>` — unlike the reads above, these ALWAYS
+require auth). Every item carries `subsonic_id` (nullable) and
+`match: mbid|metadata|none`; a miss never fails the request.
+
+| Method & path | Params | Notes |
+|---|---|---|
+| `GET /player/top/tracks` | period (required), limit, page | Top + Subsonic song id |
+| `GET /player/top/albums` | period (required), limit, page | Top + Subsonic album id |
+| `GET /player/recent` | period (required), limit, page | Latest scrobbles, playable |
+| `GET /player/search` | `q` (required) | Track search + Subsonic ids |
+| `GET /player/resolve` | `mbid=` or `artist=`+`title=`, `type=song\|album` | Single MBID→Subsonic id lookup; always 200 |
+
+Matching: exact `musicBrainzId` first, then normalized artist+title.
+Without Subsonic configured everything answers with `subsonic_id: null`.
