@@ -1,6 +1,6 @@
 FROM --platform=$BUILDPLATFORM node AS frontend
 
-ARG MEMORA_VERSION
+ARG MEMORA_VERSION=dev
 ENV VITE_MEMORA_VERSION=$MEMORA_VERSION
 ENV BUILD_TARGET=docker
 
@@ -16,7 +16,7 @@ RUN find ./build/client -type f \( -name "*.js" -o -name "*.css" -o -name "*.htm
 
 FROM golang:1.25 AS backend
 
-ARG MEMORA_VERSION
+ARG MEMORA_VERSION=dev
 ENV CGO_ENABLED=1
 ENV GOOS=linux
 
