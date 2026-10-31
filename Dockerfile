@@ -39,7 +39,7 @@ FROM debian:bookworm-slim AS final
 WORKDIR /app
 
 RUN apt-get update && \
-	apt-get install -y libvips42  && \
+	apt-get install -y libvips42 wget && \
 	rm -rf /var/lib/apt/lists/*
 
 COPY --from=backend /app/app ./app
