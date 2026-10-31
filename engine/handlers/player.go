@@ -58,6 +58,10 @@ type playerListenStore interface {
 	db.ListenStore
 }
 
+type playerAlbumStore interface {
+	db.AlbumStore
+}
+
 type playerRecommendStore interface {
 	db.TrackStore
 	db.ArtistStore
