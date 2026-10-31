@@ -2,7 +2,10 @@
 
 Read-only contract for external players (e.g. Velodrome) against a running Memora.
 Verified live against `Memora dev` on 2026-10-31. Base URL is the Memora origin
-(e.g. `https://musica.example.com`); all paths below are under `/apis/web/v1`.
+(`BASE_URL`, fill in below); all paths are under `/apis/web/v1`.
+
+> **Integrator: set this first**
+> `BASE_URL = https://MEMORA_ORIGIN_AQUI`  <!-- TODO(usuario): URL pública de Memora -->
 
 ## Auth
 
@@ -49,15 +52,41 @@ Verified example — `GET /top/tracks?limit=1&period=year` → 200:
 "image":{"xs":"/image/db4921bd-…/64x64.webp",…}}}],"total_record_count":0,…}
 ```
 
-## Integration notes (please read)
+## Field units & types (do not assume)
 
-- `musicbrainz_id` can be `null` — resolve Subsonic songs by
-  artist/title/album metadata, not by MBID alone.
-- `image.*` URLs are **relative** — prefix them with the Memora origin.
-- `duration` can be `0` when unknown.
+| Field | Type | Unit/notes |
+|---|---|---|
+| `duration` | int32 | **seconds** (`0` = unknown) |
+| `first_listen`, `time_listened` | int64 | **unix epoch, seconds** |
+| `listen_count` | int64 | scrobbles in the requested `period` |
+| `all_time_rank` | int64 | 1-based rank, all-time |
+| `musicbrainz_id` | string\|null | may be `null` — always have a metadata fallback |
+| `image.{xs,small,medium,large,xl}` | string | **relative** paths (`/image/…`) — prefix `BASE_URL` |
+| `id` (track/album/artist) | int32 | Memora-internal id, NOT a Subsonic id |
+| `subsonic_id` (/player only) | string\|null | Subsonic song/album id, `null` when unmatched |
+| `match` (/player only) | string | `mbid` \| `metadata` \| `none` |
+
+## Errors & limits
+
+- Errors are JSON `{"error":"..."}`; unauthenticated management/player calls
+  return `401` with that body.
+- Read endpoints have **no rate limit** (only `POST /login` is throttled).
+- No CORS headers on `/apis/web/v1` (native apps unaffected; browsers need a proxy).
+
+## Integration checklist (in this order)
+
+1. Set `BASE_URL` and check `GET {BASE_URL}/apis/web/v1/config` → 200.
+2. Create one API key per device in the web UI; send
+   `Authorization: Token <apikey>` on every call.
+3. `GET /top/tracks?period=all_time&limit=5` → items with counts.
+4. Prefix `image.*` with `BASE_URL` before rendering.
+5. For playback, use `/player/*` (`subsonic_id`); fall back to Subsonic
+   search by artist/title when it is `null`.
+
+## Quirks
+
 - `total_record_count` may be `0` on some endpoints even with items present;
   page with `has_next_page`.
-- Errors are JSON `{"error":"..."}`; unauthenticated management calls return 401.
 
 ## Next (Option B) — IMPLEMENTED
 
