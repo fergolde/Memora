@@ -133,6 +133,15 @@ func bindRoutes(
 			r.Get("/export", handlers.ExportHandler(db))
 			r.Delete("/data", handlers.PurgeAllDataHandler(db))
 		})
+
+		r.Route("/player", func(r chi.Router) {
+			r.Use(middleware.Authenticate(db, middleware.AuthModeSessionOrAPIKey))
+			r.Get("/top/tracks", handlers.GetPlayerTopTracksHandler(db))
+			r.Get("/top/albums", handlers.GetPlayerTopAlbumsHandler(db))
+			r.Get("/recent", handlers.GetPlayerRecentHandler(db))
+			r.Get("/search", handlers.GetPlayerSearchHandler(db))
+			r.Get("/resolve", handlers.GetPlayerResolveHandler())
+		})
 	})
 
 	r.Route("/apis/listenbrainz/1", func(r chi.Router) {
