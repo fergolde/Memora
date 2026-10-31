@@ -1,7 +1,7 @@
 FROM --platform=$BUILDPLATFORM node AS frontend
 
-ARG KOITO_VERSION
-ENV VITE_KOITO_VERSION=$KOITO_VERSION
+ARG MEMORA_VERSION
+ENV VITE_MEMORA_VERSION=$MEMORA_VERSION
 ENV BUILD_TARGET=docker
 
 WORKDIR /client
@@ -16,7 +16,7 @@ RUN find ./build/client -type f \( -name "*.js" -o -name "*.css" -o -name "*.htm
 
 FROM golang:1.25 AS backend
 
-ARG KOITO_VERSION
+ARG MEMORA_VERSION
 ENV CGO_ENABLED=1
 ENV GOOS=linux
 
@@ -31,7 +31,7 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -ldflags "-X main.Version=$KOITO_VERSION" -o app ./cmd/api
+RUN go build -ldflags "-X main.Version=$MEMORA_VERSION" -o app ./cmd/api
 
 
 FROM debian:bookworm-slim AS final

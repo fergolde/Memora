@@ -69,7 +69,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v6
         with:
-          images: gabehf/koito
+          images: fergolde/memora
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -86,7 +86,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            KOITO_VERSION=${{ steps.meta.outputs.version }}
+            MEMORA_VERSION=${{ steps.meta.outputs.version }}
           platforms: linux/amd64,linux/arm64
 
   push_dev:
@@ -113,8 +113,8 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            gabehf/koito:dev
-            gabehf/koito:dev-${{ github.sha }}
+            fergolde/memora:dev
+            fergolde/memora:dev-${{ github.sha }}
           build-args: |
-            KOITO_VERSION=dev
+            MEMORA_VERSION=dev
           platforms: linux/amd64,linux/arm64

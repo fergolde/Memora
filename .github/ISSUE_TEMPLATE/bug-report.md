@@ -3,7 +3,7 @@ name: Bug report
 about: Create a report to help us improve
 title: "[Bug] "
 labels: bug
-assignees: gabehf
+assignees: fergolde
 
 ---
 
@@ -21,10 +21,10 @@ Steps to reproduce the behavior:
 A clear and concise description of what you expected to happen.
 
 **Screenshots/Logs**
-If applicable, add screenshots to help explain your problem and any relevant logs with `KOITO_LOG_LEVEL=debug` if possible.
+If applicable, add screenshots to help explain your problem and any relevant logs with `MEMORA_LOG_LEVEL=debug` if possible.
 
 **Version (please complete the following information):**
- - Koito version: v0.0.X
+ - Memora version: v0.0.X
 
 **Additional context**
 Add any other context about the problem here.
