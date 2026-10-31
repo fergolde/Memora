@@ -8,9 +8,9 @@ import (
 	"time"
 	_ "time/tzdata"
 
-	"github.com/gabehf/koito/internal/cfg"
-	"github.com/gabehf/koito/internal/db"
-	"github.com/gabehf/koito/internal/logger"
+	"github.com/fergolde/memora/internal/cfg"
+	"github.com/fergolde/memora/internal/db"
+	"github.com/fergolde/memora/internal/logger"
 )
 
 const defaultLimitSize = 100

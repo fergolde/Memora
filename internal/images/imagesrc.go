@@ -8,7 +8,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/gabehf/koito/internal/logger"
+	"github.com/fergolde/memora/internal/logger"
 	"github.com/google/uuid"
 )
 

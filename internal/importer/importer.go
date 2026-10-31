@@ -6,8 +6,8 @@ import (
 	"path"
 	"time"
 
-	"github.com/gabehf/koito/internal/cfg"
-	"github.com/gabehf/koito/internal/logger"
+	"github.com/fergolde/memora/internal/cfg"
+	"github.com/fergolde/memora/internal/logger"
 )
 
 // runs after every importer

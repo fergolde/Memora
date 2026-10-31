@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/gabehf/koito/internal/db"
-	"github.com/gabehf/koito/internal/logger"
-	"github.com/gabehf/koito/internal/mbz"
+	"github.com/fergolde/memora/internal/db"
+	"github.com/fergolde/memora/internal/logger"
+	"github.com/fergolde/memora/internal/mbz"
 	"github.com/google/uuid"
 )
 

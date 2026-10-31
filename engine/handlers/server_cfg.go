@@ -3,8 +3,8 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/gabehf/koito/internal/cfg"
-	"github.com/gabehf/koito/internal/utils"
+	"github.com/fergolde/memora/internal/cfg"
+	"github.com/fergolde/memora/internal/utils"
 )
 
 type ServerConfig struct {

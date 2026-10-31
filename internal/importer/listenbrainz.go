@@ -11,12 +11,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gabehf/koito/engine/handlers"
-	"github.com/gabehf/koito/internal/catalog"
-	"github.com/gabehf/koito/internal/cfg"
-	"github.com/gabehf/koito/internal/logger"
-	"github.com/gabehf/koito/internal/mbz"
-	"github.com/gabehf/koito/internal/utils"
+	"github.com/fergolde/memora/engine/handlers"
+	"github.com/fergolde/memora/internal/catalog"
+	"github.com/fergolde/memora/internal/cfg"
+	"github.com/fergolde/memora/internal/logger"
+	"github.com/fergolde/memora/internal/mbz"
+	"github.com/fergolde/memora/internal/utils"
 	"github.com/google/uuid"
 )
 

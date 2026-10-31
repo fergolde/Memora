@@ -13,8 +13,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gabehf/koito/internal/mbz"
-	"github.com/gabehf/koito/internal/models"
+	"github.com/fergolde/memora/internal/mbz"
+	"github.com/fergolde/memora/internal/models"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 )

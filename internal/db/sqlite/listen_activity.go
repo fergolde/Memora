@@ -8,7 +8,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/gabehf/koito/internal/db"
+	"github.com/fergolde/memora/internal/db"
 )
 
 func (s *Sqlite) GetListenActivity(ctx context.Context, opts db.ListenActivityOpts) ([]db.ListenActivityItem, error) {

@@ -3,11 +3,11 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/gabehf/koito/engine/middleware"
-	"github.com/gabehf/koito/internal/db"
-	"github.com/gabehf/koito/internal/export"
-	"github.com/gabehf/koito/internal/logger"
-	"github.com/gabehf/koito/internal/utils"
+	"github.com/fergolde/memora/engine/middleware"
+	"github.com/fergolde/memora/internal/db"
+	"github.com/fergolde/memora/internal/export"
+	"github.com/fergolde/memora/internal/logger"
+	"github.com/fergolde/memora/internal/utils"
 )
 
 func ExportHandler(store db.ExportStore) http.HandlerFunc {

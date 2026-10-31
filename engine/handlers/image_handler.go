@@ -7,9 +7,9 @@ import (
 	"io/fs"
 	"net/http"
 
-	"github.com/gabehf/koito/imagecache"
-	"github.com/gabehf/koito/internal/db"
-	"github.com/gabehf/koito/internal/logger"
+	"github.com/fergolde/memora/imagecache"
+	"github.com/fergolde/memora/internal/db"
+	"github.com/fergolde/memora/internal/logger"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 	"github.com/rs/zerolog"

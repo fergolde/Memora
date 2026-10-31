@@ -8,10 +8,10 @@ import (
 	"path"
 	"time"
 
-	"github.com/gabehf/koito/internal/catalog"
-	"github.com/gabehf/koito/internal/cfg"
-	"github.com/gabehf/koito/internal/logger"
-	mbz "github.com/gabehf/koito/internal/mbz"
+	"github.com/fergolde/memora/internal/catalog"
+	"github.com/fergolde/memora/internal/cfg"
+	"github.com/fergolde/memora/internal/logger"
+	mbz "github.com/fergolde/memora/internal/mbz"
 )
 
 type SpotifyExportItem struct {

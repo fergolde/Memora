@@ -3,7 +3,7 @@ package db
 import (
 	"time"
 
-	"github.com/gabehf/koito/internal/models"
+	"github.com/fergolde/memora/internal/models"
 	"github.com/google/uuid"
 )
 

@@ -10,10 +10,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gabehf/koito/engine"
-	"github.com/gabehf/koito/internal/cfg"
-	"github.com/gabehf/koito/internal/db/sqlite"
-	"github.com/gabehf/koito/internal/utils"
+	"github.com/fergolde/memora/engine"
+	"github.com/fergolde/memora/internal/cfg"
+	"github.com/fergolde/memora/internal/db/sqlite"
+	"github.com/fergolde/memora/internal/utils"
 )
 
 var store *sqlite.Sqlite

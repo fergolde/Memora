@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/gabehf/koito/internal/catalog"
-	"github.com/gabehf/koito/internal/models"
+	"github.com/fergolde/memora/internal/catalog"
+	"github.com/fergolde/memora/internal/models"
 	"github.com/lithammer/fuzzysearch/fuzzy"
 )
 

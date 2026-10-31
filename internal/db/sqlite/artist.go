@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/gabehf/koito/internal/catalog"
-	"github.com/gabehf/koito/internal/db"
-	"github.com/gabehf/koito/internal/models"
-	"github.com/gabehf/koito/internal/utils"
+	"github.com/fergolde/memora/internal/catalog"
+	"github.com/fergolde/memora/internal/db"
+	"github.com/fergolde/memora/internal/models"
+	"github.com/fergolde/memora/internal/utils"
 	"github.com/google/uuid"
 )
 

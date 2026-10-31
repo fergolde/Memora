@@ -6,7 +6,7 @@ import (
 	"os"
 	"sync"
 
-	"github.com/gabehf/koito/internal/cfg"
+	"github.com/fergolde/memora/internal/cfg"
 	"github.com/rs/zerolog"
 )
 

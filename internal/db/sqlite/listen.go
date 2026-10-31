@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/gabehf/koito/internal/catalog"
-	"github.com/gabehf/koito/internal/db"
-	"github.com/gabehf/koito/internal/models"
+	"github.com/fergolde/memora/internal/catalog"
+	"github.com/fergolde/memora/internal/db"
+	"github.com/fergolde/memora/internal/models"
 	"github.com/google/uuid"
 )
 

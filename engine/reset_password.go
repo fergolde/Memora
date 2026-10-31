@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/gabehf/koito/internal/db"
-	"github.com/gabehf/koito/internal/utils"
+	"github.com/fergolde/memora/internal/db"
+	"github.com/fergolde/memora/internal/utils"
 )
 
 func ResetPassword(getenv func(string) string, w io.Writer, version string) error {

@@ -7,13 +7,13 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/gabehf/koito/imagecache"
-	"github.com/gabehf/koito/internal/cfg"
-	"github.com/gabehf/koito/internal/db"
-	"github.com/gabehf/koito/internal/images"
-	"github.com/gabehf/koito/internal/logger"
-	"github.com/gabehf/koito/internal/mbz"
-	"github.com/gabehf/koito/internal/models"
+	"github.com/fergolde/memora/imagecache"
+	"github.com/fergolde/memora/internal/cfg"
+	"github.com/fergolde/memora/internal/db"
+	"github.com/fergolde/memora/internal/images"
+	"github.com/fergolde/memora/internal/logger"
+	"github.com/fergolde/memora/internal/mbz"
+	"github.com/fergolde/memora/internal/models"
 	"github.com/google/uuid"
 )
 

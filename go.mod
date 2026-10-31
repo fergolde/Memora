@@ -1,4 +1,4 @@
-module github.com/gabehf/koito
+module github.com/fergolde/memora
 
 go 1.25.0
 

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/gabehf/koito/internal/db"
+	"github.com/fergolde/memora/internal/db"
 )
 
 func (s *Sqlite) GetExportPage(ctx context.Context, opts db.GetExportPageOpts) ([]*db.ExportItem, error) {

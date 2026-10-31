@@ -13,8 +13,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/gabehf/koito/internal/cfg"
-	"github.com/gabehf/koito/internal/images"
+	"github.com/fergolde/memora/internal/cfg"
+	"github.com/fergolde/memora/internal/images"
 	"github.com/google/uuid"
 	"github.com/h2non/bimg"
 	"golang.org/x/sync/singleflight"

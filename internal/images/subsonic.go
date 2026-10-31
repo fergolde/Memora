@@ -8,9 +8,9 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/gabehf/koito/internal/cfg"
-	"github.com/gabehf/koito/internal/logger"
-	"github.com/gabehf/koito/queue"
+	"github.com/fergolde/memora/internal/cfg"
+	"github.com/fergolde/memora/internal/logger"
+	"github.com/fergolde/memora/queue"
 	"github.com/google/uuid"
 )
 

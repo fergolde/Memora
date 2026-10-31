@@ -5,9 +5,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/gabehf/koito/internal/db"
-	"github.com/gabehf/koito/internal/logger"
-	"github.com/gabehf/koito/internal/utils"
+	"github.com/fergolde/memora/internal/db"
+	"github.com/fergolde/memora/internal/logger"
+	"github.com/fergolde/memora/internal/utils"
 )
 
 func DeleteListenHandler(store db.ListenStore) http.HandlerFunc {

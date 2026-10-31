@@ -3,7 +3,7 @@ package summary_test
 import (
 	"testing"
 
-	"github.com/gabehf/koito/internal/cfg"
+	"github.com/fergolde/memora/internal/cfg"
 )
 
 func TestMain(t *testing.M) {

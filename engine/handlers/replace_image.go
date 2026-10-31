@@ -6,12 +6,12 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/gabehf/koito/imagecache"
-	"github.com/gabehf/koito/internal/catalog"
-	"github.com/gabehf/koito/internal/db"
-	"github.com/gabehf/koito/internal/images"
-	"github.com/gabehf/koito/internal/logger"
-	"github.com/gabehf/koito/internal/utils"
+	"github.com/fergolde/memora/imagecache"
+	"github.com/fergolde/memora/internal/catalog"
+	"github.com/fergolde/memora/internal/db"
+	"github.com/fergolde/memora/internal/images"
+	"github.com/fergolde/memora/internal/logger"
+	"github.com/fergolde/memora/internal/utils"
 	"github.com/google/uuid"
 	"github.com/rs/zerolog"
 )

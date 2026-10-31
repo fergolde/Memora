@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/gabehf/koito/internal/db"
+	"github.com/fergolde/memora/internal/db"
 )
 
 func (s *Sqlite) CountListens(ctx context.Context, timeframe db.Timeframe) (int64, error) {

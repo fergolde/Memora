@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/gabehf/koito/internal/db"
-	"github.com/gabehf/koito/internal/models"
+	"github.com/fergolde/memora/internal/db"
+	"github.com/fergolde/memora/internal/models"
 )
 
 type Summary struct {

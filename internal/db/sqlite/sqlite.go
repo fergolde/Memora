@@ -7,10 +7,10 @@ import (
 	"path"
 	"time"
 
-	migrations_sqlite "github.com/gabehf/koito/db/migrations_sqlite"
-	"github.com/gabehf/koito/internal/cfg"
-	"github.com/gabehf/koito/internal/db"
-	"github.com/gabehf/koito/internal/models"
+	migrations_sqlite "github.com/fergolde/memora/db/migrations_sqlite"
+	"github.com/fergolde/memora/internal/cfg"
+	"github.com/fergolde/memora/internal/db"
+	"github.com/fergolde/memora/internal/models"
 	"github.com/google/uuid"
 	_ "modernc.org/sqlite"
 

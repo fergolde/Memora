@@ -16,11 +16,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gabehf/koito/engine/handlers"
-	"github.com/gabehf/koito/internal/cfg"
-	"github.com/gabehf/koito/internal/db"
-	"github.com/gabehf/koito/internal/db/sqlite"
-	"github.com/gabehf/koito/internal/models"
+	"github.com/fergolde/memora/engine/handlers"
+	"github.com/fergolde/memora/internal/cfg"
+	"github.com/fergolde/memora/internal/db"
+	"github.com/fergolde/memora/internal/db/sqlite"
+	"github.com/fergolde/memora/internal/models"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

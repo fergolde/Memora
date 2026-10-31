@@ -3,11 +3,11 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/gabehf/koito/internal/db"
-	"github.com/gabehf/koito/internal/logger"
-	"github.com/gabehf/koito/internal/memkv"
-	"github.com/gabehf/koito/internal/models"
-	"github.com/gabehf/koito/internal/utils"
+	"github.com/fergolde/memora/internal/db"
+	"github.com/fergolde/memora/internal/logger"
+	"github.com/fergolde/memora/internal/memkv"
+	"github.com/fergolde/memora/internal/models"
+	"github.com/fergolde/memora/internal/utils"
 )
 
 type NowPlayingResponse struct {

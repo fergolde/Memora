@@ -6,7 +6,7 @@ import (
 	"strings"
 	"log"
 
-	"github.com/gabehf/koito/engine"
+	"github.com/fergolde/memora/engine"
 )
 
 var Version = "dev"

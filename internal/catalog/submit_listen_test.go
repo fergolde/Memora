@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gabehf/koito/internal/catalog"
-	"github.com/gabehf/koito/internal/db"
-	"github.com/gabehf/koito/internal/mbz"
+	"github.com/fergolde/memora/internal/catalog"
+	"github.com/fergolde/memora/internal/db"
+	"github.com/fergolde/memora/internal/mbz"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
