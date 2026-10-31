@@ -1,9 +1,9 @@
 ---
 title: Configuration
-description: The available configuration options when setting up Koito.
+description: The available configuration options when setting up Memora.
 ---
 
-Koito is configured using **environment variables**. This is the full list of configuration options supported by Koito.
+Memora is configured using **environment variables**. This is the full list of configuration options supported by Memora.
 
 The suffix `_FILE` is also supported for every environment variable. This allows the use of Docker secrets, for example: `MEMORA_SUBSONIC_PARAMS_FILE=/run/secrets/subsonic-params` will load the content of the file at `/run/secrets/subsonic-params` for the environment variable `MEMORA_SUBSONIC_PARAMS`.
 
@@ -14,12 +14,12 @@ If the environment variable is defined without **and** with the suffix at the sa
 ##### MEMORA_DEFAULT_USERNAME
 
 - Default: `admin`
-- Description: The username for the user that is created on first startup. Only applies when running Koito for the first time.
+- Description: The username for the user that is created on first startup. Only applies when running Memora for the first time.
 
 ##### MEMORA_DEFAULT_PASSWORD
 
 - Default: `changeme`
-- Description: The password for the user that is created on first startup. Only applies when running Koito for the first time.
+- Description: The password for the user that is created on first startup. Only applies when running Memora for the first time.
 
 ##### MEMORA_DEFAULT_THEME
 
@@ -29,7 +29,7 @@ If the environment variable is defined without **and** with the suffix at the sa
 ##### MEMORA_LOGIN_GATE
 
 - Default: `false`
-- Description: When `true`, Koito will not show any statistics unless the user is logged in.
+- Description: When `true`, Memora will not show any statistics unless the user is logged in.
 
 ##### MEMORA_BIND_ADDR
 
@@ -38,7 +38,7 @@ If the environment variable is defined without **and** with the suffix at the sa
 ##### MEMORA_LISTEN_PORT
 
 - Default: `4110`
-- Description: The port Koito will listen on.
+- Description: The port Memora will listen on.
 
 ##### MEMORA_ENABLE_STRUCTURED_LOGGING
 
@@ -53,12 +53,12 @@ If the environment variable is defined without **and** with the suffix at the sa
 ##### MEMORA_ARTIST_SEPARATORS_REGEX
 
 - Default: `\s+·\s+`
-- Description: The list of regex patterns Koito will use to separate artist strings, separated by two semicolons (`;;`).
+- Description: The list of regex patterns Memora will use to separate artist strings, separated by two semicolons (`;;`).
 
 ##### MEMORA_MUSICBRAINZ_URL
 
 - Default: `https://musicbrainz.org`
-- Description: The URL Koito will use to contact MusicBrainz. Replace this value if you have your own MusicBrainz mirror.
+- Description: The URL Memora will use to contact MusicBrainz. Replace this value if you have your own MusicBrainz mirror.
 
 ##### MEMORA_MUSICBRAINZ_RATE_LIMIT
 
@@ -68,7 +68,7 @@ If the environment variable is defined without **and** with the suffix at the sa
 ##### MEMORA_ENABLE_LBZ_RELAY
 
 - Default: `false`
-- Description: Set to `true` if you want to relay requests from the ListenBrainz endpoints on your Koito server to another ListenBrainz compatible server.
+- Description: Set to `true` if you want to relay requests from the ListenBrainz endpoints on your Memora server to another ListenBrainz compatible server.
 
 ##### MEMORA_LBZ_RELAY_URL
 
@@ -87,7 +87,7 @@ If the environment variable is defined without **and** with the suffix at the sa
 
 ##### MEMORA_FORCE_TZ
 
-- Description: A canonical IANA database time zone name (https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) that Koito will use to serve all clients. Overrides any timezones requested via a `tz` cookie or `tz` query parameter. Koito will fail to start if this value is invalid.
+- Description: A canonical IANA database time zone name (https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) that Memora will use to serve all clients. Overrides any timezones requested via a `tz` cookie or `tz` query parameter. Memora will fail to start if this value is invalid.
 
 ##### MEMORA_DISABLE_DEEZER
 
@@ -113,7 +113,7 @@ If the environment variable is defined without **and** with the suffix at the sa
 - Required: `true` if MEMORA_SUBSONIC_URL is set
 - Description: The `u`, `t`, and `s` authentication parameters to use for authenticated requests to your subsonic server, in the format `u=XXX&t=XXX&s=XXX`. An easy way to find them is to open the network tab in the developer tools of your browser of choice and copy them from a request.
   :::caution
-  If Koito is unable to validate your Subsonic configuration, it will fail to start. If you notice your container isn't running after
+  If Memora is unable to validate your Subsonic configuration, it will fail to start. If you notice your container isn't running after
   changing these parameters, check the logs!
   :::
 
@@ -130,12 +130,12 @@ If the environment variable is defined without **and** with the suffix at the sa
 ##### MEMORA_DISABLE_RATE_LIMIT
 
 - Default: `false`
-- Description: When enabled, disables the rate limiter that Koito has on the `/apis/web/v1/login` endpoint.
+- Description: When enabled, disables the rate limiter that Memora has on the `/apis/web/v1/login` endpoint.
 
 ##### MEMORA_THROTTLE_IMPORTS_MS
 
 - Default: `0`
-- Description: The amount of time to wait, in milliseconds, between listen imports. Can help when running Koito on low-powered machines.
+- Description: The amount of time to wait, in milliseconds, between listen imports. Can help when running Memora on low-powered machines.
 
 ##### MEMORA_IMPORT_BEFORE_UNIX
 
@@ -156,7 +156,7 @@ If the environment variable is defined without **and** with the suffix at the sa
 - Description: A comma separated list of origins to allow CORS requests from. The special value `*` allows CORS requests from all origins.
 
 :::danger
-Environment variables below this notice are deprecated, and will not work with current versions of Koito.
+Environment variables below this notice are deprecated, and will not work with current versions of Memora.
 :::
 
 ##### MEMORA_SQLITE_ENABLED

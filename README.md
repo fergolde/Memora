@@ -1,8 +1,7 @@
 <div align="center">
   
-![Koito logo](https://github.com/user-attachments/assets/bd69a050-b40f-4da7-8ff1-4607554bfd6d)
+![Memora logo](https://github.com/user-attachments/assets/bd69a050-b40f-4da7-8ff1-4607554bfd6d)
 
-_Koito (小糸) is a Japanese surname. It is also homophonous with the words 恋と (koi to), meaning "and/with love"._
 
 </div>
 
@@ -12,11 +11,11 @@ _Koito (小糸) is a Japanese surname. It is also homophonous with the words 恋
   
 </div>
 
-Koito is a modern, themeable ListenBrainz-compatible scrobbler for self-hosters who want control over their data and insights into their listening habits.
+Memora is a modern, themeable ListenBrainz-compatible scrobbler for self-hosters who want control over their data and insights into their listening habits.
 It supports relaying to other compatible scrobblers, so you can try it safely without replacing your current setup.
 
 > This project is under active development and still considered "unstable", which means the main branch can be unusable at times, and some breaking changes may occur. If you don't want to replace your current scrobbler
-> with Koito quite yet, you can [set up a relay](https://koito.io/guides/scrobbler/#set-up-a-relay) from Koito to another ListenBrainz-compatible
+> with Memora quite yet, you can [set up a relay](https://koito.io/guides/scrobbler/#set-up-a-relay) from Memora to another ListenBrainz-compatible
 > scrobbler. This is what I've been doing for the entire development of this app and it hasn't failed me once. Or, you can always use something
 > like [multi-scrobbler](https://github.com/FoxxMD/multi-scrobbler).
 
@@ -44,13 +43,13 @@ See the [installation guide](https://koito.io/guides/installation/), or, if you 
 
 ```yaml
 services:
-  koito:
-    image: gabehf/koito:latest
-    container_name: koito
+  memora:
+    image: fergolde/memora:latest
+    container_name: memora
     ports:
       - "4110:4110"
     volumes:
-      - ./koito:/etc/memora
+      - ./memora-data:/etc/memora
     restart: unless-stopped
 ```
 
@@ -81,4 +80,4 @@ Not just during development, you can see my complete listening data on my [live 
 #### Random notes
 
 - I find it a little annoying when READMEs use emoji but everyone else is doing it so I felt like I had to...
-- About 50% of the reason I built this was minor/not-so-minor greivances with Maloja. Could I have just contributed to Maloja? Maybe, but I like building stuff and I like Koito's UI a lot more anyways.
+- About 50% of the reason I built this was minor/not-so-minor greivances with Maloja. Could I have just contributed to Maloja? Maybe, but I like building stuff and I like Memora's UI a lot more anyways.

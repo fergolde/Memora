@@ -1,14 +1,14 @@
 ---
 title: Editing Data
-description: How to edit artist, album, and track information in your Koito instance.
+description: How to edit artist, album, and track information in your Memora instance.
 ---
 
-In order to start editing information on your Koito instance, you need to be logged in. See the [Setting up the Scrobber](/guides/scrobbler) guide if you need to log in for the first time.
+In order to start editing information on your Memora instance, you need to be logged in. See the [Setting up the Scrobber](/guides/scrobbler) guide if you need to log in for the first time.
 
 Once logged in, navigate to the page of the item you want to edit. For this example, we will use the fantastic Korean dream pop group OurR's track [Bloom](https://www.youtube.com/watch?v=USHrBJRmF-o).
 When you are logged in and on an artist, album, or track page, you will see the editing options on the top right.
 
-![A Koito page for the track Bloom by OurR, showing the editing options](../../../assets/ourr_bloom.png)
+![A Memora page for the track Bloom by OurR, showing the editing options](../../../assets/ourr_bloom.png)
 
 #### Editing
 
@@ -16,7 +16,7 @@ The first option from the left is the edit menu. The edit menu lets you edit thi
 
 ![a menu showing editing options](../../../assets/edit_menu.png)
 
-In the alias manager section, we can add and remove aliases, as well as set an alias as "primary" to use it as the display name of the item. Koito uses aliases for not only the UI, but also for matching artists, albums, and tracks submitted to the scrobbler, and for searching. So if you are like me and listen to a lot of music from countries with non-latin script, adding aliases makes it easy to search for those items.
+In the alias manager section, we can add and remove aliases, as well as set an alias as "primary" to use it as the display name of the item. Memora uses aliases for not only the UI, but also for matching artists, albums, and tracks submitted to the scrobbler, and for searching. So if you are like me and listen to a lot of music from countries with non-latin script, adding aliases makes it easy to search for those items.
 
 We can also add and remove artist associations, as well as update the MusicBrainz ID of the item. Note that MusicBrainz IDs for items must be unique among other items of the same type (artists, albums, and tracks).
 
@@ -32,7 +32,7 @@ Note that you can only edit images on an artist or album page, as the image show
 
 #### Merging Items
 
-Koito allows you to merge two items, which means that all of that item's children (for artists: albums, tracks and listens; for albums: tracks and listens; etc.) will be assigned to a different item, and the old item will be deleted.
+Memora allows you to merge two items, which means that all of that item's children (for artists: albums, tracks and listens; for albums: tracks and listens; etc.) will be assigned to a different item, and the old item will be deleted.
 
 For this example, we will use the incredible track [Tsumugu](https://www.youtube.com/watch?v=NDwqZIXOvKw) by the Japanese artist とた (Tota). Here we can see there two versions of the track, one in Japanese and one romanized. I only want to keep the Japanese one. So, just navigate to the page for the Japanese-titled track, open the Merge Items menu (the third editing option), search for the track we want to be merged, and click "Merge Items". A text will appear in the UI to clarify which track is the primary and which will be merged into it.
 

@@ -18,7 +18,7 @@ export default defineConfig({
           },
         },
       ],
-      title: "Koito",
+      title: "Memora",
       logo: {
         src: "./src/assets/logo_text.png",
         replacesTitle: true,
@@ -27,7 +27,7 @@ export default defineConfig({
         {
           icon: "github",
           label: "GitHub",
-          href: "https://github.com/gabehf/koito",
+          href: "https://github.com/fergolde/Memora",
         },
       ],
       sidebar: [
