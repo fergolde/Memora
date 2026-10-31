@@ -23,7 +23,7 @@ export default function ChartLayout<T>({
   endpoint,
   render,
 }: ChartLayoutProps<T>) {
-  const pgTitle = `${title} - Koito`;
+  const pgTitle = `${title} - Memora`;
 
   const fetcher = useFetcher();
   const location = useLocation();

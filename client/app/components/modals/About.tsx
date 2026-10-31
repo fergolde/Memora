@@ -16,7 +16,7 @@ export default function About() {
   >();
 
   useEffect(() => {
-    fetch("https://api.github.com/repos/gabehf/koito/releases/latest")
+    fetch("https://api.github.com/repos/fergolde/Memora/releases/latest")
       .then((r) => r.json())
       .then((r) => setLatestVersionInfo(r))
       .catch((err) => console.log(err));
@@ -28,13 +28,13 @@ export default function About() {
         <div className="inline-flex items-center">
           <img
             src="/web-app-manifest-192x192.png"
-            alt="koito logo"
+            alt="memora logo"
             style={{ width: 70 }}
           />
-          <h5 className="text-6xl font-semibold">Koito</h5>
+          <h5 className="text-6xl font-semibold">Memora</h5>
         </div>
         <div className="px-2 py-1 rounded-sm bg-secondary">
-          Koito {currentVersion}
+          Memora {currentVersion}
         </div>
         {updateAvailable && latestVersionInfo && (
           <Link

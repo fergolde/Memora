@@ -60,7 +60,7 @@ export default function Sidebar() {
           keyHint={<ExternalLink size={14} />}
           space={22}
           externalLink
-          to="https://koito.io"
+          to="https://github.com/fergolde/Memora"
           name="About"
           onClick={() => {}}
           modal={<></>}

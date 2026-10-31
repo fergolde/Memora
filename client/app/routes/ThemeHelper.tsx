@@ -83,7 +83,7 @@ export default function ThemeHelper() {
           </div>
           <div className="flex gap-4">
             <input
-              name="koito-update-username"
+              name="memora-update-username"
               type="text"
               placeholder="Update username"
               className="w-full mx-auto fg bg rounded p-2"
@@ -94,13 +94,13 @@ export default function ThemeHelper() {
           </div>
           <div className="flex gap-4">
             <input
-              name="koito-update-password"
+              name="memora-update-password"
               type="password"
               placeholder="Update password"
               className="w-full mx-auto fg bg rounded p-2"
             />
             <input
-              name="koito-confirm-password"
+              name="memora-confirm-password"
               type="password"
               placeholder="Confirm password"
               className="w-full mx-auto fg bg rounded p-2"

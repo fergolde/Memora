@@ -18,7 +18,7 @@ export default function ExportModal() {
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = url;
-            a.download = "koito_export.json";
+            a.download = "memora_export.json";
             document.body.appendChild(a);
             a.click();
             a.remove();

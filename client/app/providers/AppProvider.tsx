@@ -46,7 +46,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     setUser({ ...user, username: value });
   };
 
-  const currentVersion = import.meta.env.VITE_KOITO_VERSION || pkg.version;
+  const currentVersion = import.meta.env.VITE_MEMORA_VERSION || pkg.version;
 
   const [updateAvailable, setUpdateAvailable] = useState<boolean>(false);
   const [firstActivity, setFirstActivity] = useState<Date | undefined>();
@@ -82,7 +82,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    fetch("https://api.github.com/repos/gabehf/koito/releases/latest")
+    fetch("https://api.github.com/repos/fergolde/Memora/releases/latest")
       .then((r) => r.json())
       .then((r) => {
         setUpdateAvailable(isNewerVersion(currentVersion, r.tag_name));

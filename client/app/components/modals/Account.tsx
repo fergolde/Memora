@@ -74,7 +74,7 @@ export default function Account() {
         >
           <div className="flex gap-4">
             <input
-              name="koito-update-username"
+              name="memora-update-username"
               type="text"
               placeholder="Update username"
               className="w-full mx-auto fg bg rounded p-2"
@@ -95,7 +95,7 @@ export default function Account() {
         >
           <div className="flex gap-4">
             <input
-              name="koito-update-password"
+              name="memora-update-password"
               type="password"
               placeholder="Update password"
               className="w-full mx-auto fg bg rounded p-2"
@@ -103,7 +103,7 @@ export default function Account() {
               onChange={(e) => setPassword(e.target.value)}
             />
             <input
-              name="koito-confirm-password"
+              name="memora-confirm-password"
               type="password"
               placeholder="Confirm new password"
               className="w-full mx-auto fg bg rounded p-2"

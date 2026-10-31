@@ -3517,9 +3517,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"koito@workspace:.":
+"memora@workspace:.":
   version: 0.0.0-use.local
-  resolution: "koito@workspace:."
+  resolution: "memora@workspace:."
   dependencies:
     "@radix-ui/react-tabs": "npm:^1.1.13"
     "@react-router/dev": "npm:^7.15.0"

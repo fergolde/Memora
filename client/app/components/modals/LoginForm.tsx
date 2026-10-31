@@ -42,14 +42,14 @@ export default function LoginForm() {
           onSubmit={(e) => e.preventDefault()}
         >
           <input
-            name="koito-username"
+            name="memora-username"
             type="text"
             placeholder="Username"
             className="w-full mx-auto fg bg rounded p-2"
             onChange={(e) => setUsername(e.target.value)}
           />
           <input
-            name="koito-password"
+            name="memora-password"
             type="password"
             placeholder="Password"
             className="w-full mx-auto fg bg rounded p-2"
@@ -58,8 +58,8 @@ export default function LoginForm() {
           <div className="flex gap-2 items-center">
             <input
               type="checkbox"
-              name="koito-remember"
-              id="koito-remember"
+              name="memora-remember"
+              id="memora-remember"
               onChange={() => setRemember(!remember)}
             />
             <label htmlFor="kotio-remember">Remember me</label>

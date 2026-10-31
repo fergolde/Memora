@@ -150,7 +150,7 @@ function submitListen(id: string, ts: Date): Promise<Response> {
     body: JSON.stringify({
       track_id: Number(id),
       unix: unix,
-      client: "Koito Web UI",
+      client: "Memora Web UI",
     }),
     headers: {
       "Content-Type": "application/json",
